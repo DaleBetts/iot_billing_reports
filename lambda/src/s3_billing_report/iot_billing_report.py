@@ -5,7 +5,7 @@ import datetime
 import re
 import collections
 import csv
-import urllib2
+import pandas as pd
 
 config = ConfigParser.RawConfigParser()
 config.read('./vars.ini')
@@ -22,7 +22,14 @@ def lambda_handler(event, context):
     custom_suffix.strip()
 
     for key in get_matching_s3_keys(bucket=s3_bucket,prefix=custom_prefix, suffix=custom_suffix):
-        print(key)
+        #print(key)
+        csv_obj = client.get_object(Bucket=s3_bucket, Key=key)
+        body = csv_obj['Body']
+        csv_string = body.read().decode('utf-8')
+
+        df = pd.read_csv(StringIO(csv_string))
+
+
 
 def get_matching_s3_objects(bucket, prefix='', suffix=''):
     """
@@ -55,7 +62,7 @@ def get_matching_s3_objects(bucket, prefix='', suffix=''):
 
         for obj in contents:
             key = obj['Key']
-            print(obj)
+            print(obj['Key'])
             if key.endswith(suffix):
                 yield obj
 
