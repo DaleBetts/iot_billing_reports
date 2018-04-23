@@ -6,6 +6,8 @@ import re
 import collections
 import csv
 import pandas as pd
+import zipfile
+import io
 
 config = ConfigParser.RawConfigParser()
 config.read('./vars.ini')
@@ -16,18 +18,22 @@ def lambda_handler(event, context):
     regions_strg = config.get('regions', 'region_list')
     regions_list = regions_strg.split(',')
     s3_bucket = config.get('s3', 'report_bucket')
-    custom_prefix = config.get('config', 'custom_prefix')
-    custom_suffix = config.get('config', 'custom_suffix')
-    custom_prefix.strip()
-    custom_suffix.strip()
+    custom_prefix = config.get('config', 'custom_prefix').strip()
+    custom_suffix = config.get('config', 'custom_suffix').strip()
+    #custom_prefix.strip()
+    #custom_suffix.strip()
 
     for key in get_matching_s3_keys(bucket=s3_bucket,prefix=custom_prefix, suffix=custom_suffix):
         #print(key)
-        csv_obj = client.get_object(Bucket=s3_bucket, Key=key)
-        body = csv_obj['Body']
-        csv_string = body.read().decode('utf-8')
-
-        df = pd.read_csv(StringIO(csv_string))
+        client = boto3.client('s3')
+        obj = client.get_object(Bucket=s3_bucket, Key=key)
+        buffer = io.BytesIO(obj["Body"].read())
+        zip_file = zipfile.ZipFile(buffer,'r')
+        for name_of_zipfile in zip_file.namelist():
+          df = pd.read_csv(zip_file.open(name_of_zipfile))
+          #print(df.filter(items=['Cost']))
+          #print(df.ix[723,'Cost'])
+          print(df["Cost"].iloc[-2])
 
 
 
@@ -62,7 +68,7 @@ def get_matching_s3_objects(bucket, prefix='', suffix=''):
 
         for obj in contents:
             key = obj['Key']
-            print(obj['Key'])
+            #print(obj['Key'])
             if key.endswith(suffix):
                 yield obj
 
