@@ -5,4 +5,4 @@ region_list = eu-west-2
 [config]
 custom_prefix = 118131682210-aws-billing-detailed-line-items-with-reso
 custom_suffix = csv.zip
-sns_arn = arn:aws:sns:eu-west-2:118131682210:bill-updates-topic
+sns_arn = ${sns_arn} 

@@ -12,3 +12,20 @@ resource "aws_lambda_function" "lambda_s3_billing_report" {
   runtime       = "python2.7"
   role          = "${aws_iam_role.s3_billing_report_role.arn}"
 }
+
+resource "aws_sns_topic" "bill_updates" {
+  name = "bill-updates-topic"
+}
+
+data "template_file" "init" {
+  template = "${path.module}/vars.ini.tpl"
+
+  vars {
+    sns_arn = "${aws_sns_topic.bill_updates.arn}"
+  }
+}
+
+resource "local_file" "lambda_config" {
+    content     = "${data.template_file.init.rendered}"
+    filename = "../../../lambda/src/s3_billing_report/vars.ini"
+}
