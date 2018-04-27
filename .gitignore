@@ -4,6 +4,7 @@
 # Custom
 
 src/*
+files/*
 
 !src/s3-billing-report.py
 !src/vars.ini
