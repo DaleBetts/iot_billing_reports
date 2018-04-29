@@ -23,6 +23,7 @@ data "template_file" "init" {
 
   vars {
     sns_arn = "${aws_sns_topic.bill_updates.arn}"
+    aws_account_id = "${data.aws_caller_identity.current.account_id}"
   }
 }
 
