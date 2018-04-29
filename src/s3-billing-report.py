@@ -34,7 +34,7 @@ def lambda_handler(event, context):
     response = client.publish(
         TargetArn=sns_arn,
         Message=json.dumps({'default': json.dumps(message),
-                            'sms': bill,
+                            'sms': "Your AWS bill is currently " + bill,
                             'email': bill}),
         Subject="Your Latest AWS Bill is: " + bill,
         MessageStructure='json'
@@ -97,4 +97,4 @@ def get_matching_s3_keys(bucket, prefix='', suffix=''):
         yield obj['Key']
 
 
-#lambda_handler('test','test')
+lambda_handler('test','test')

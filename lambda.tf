@@ -5,7 +5,8 @@ data "archive_file" "dotfiles" {
 }
 
 resource "aws_lambda_function" "lambda_s3_billing_report" {
-  filename      = "${path.module}/files/s3-billing-report.zip"
+  s3_bucket     = "${var.lambda_s3_bucket}"
+  s3_key        = "${var.lambda_s3_key}"
   function_name = "s3-billing-report"
   handler       = "s3-billing-report.lambda_handler"
   timeout       = 60
