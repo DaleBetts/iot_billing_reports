@@ -48,3 +48,13 @@ You will need to subscribe to your SNS topic which is provided as an output from
 ## Contributions and Feedback
 
 Feel free to recommend improvements or contribute via a PR. 
+
+
+# Thanks and References
+
+Thanks to this blog for providing useful lookup code for s3 files:
+
+https://alexwlchan.net/2018/01/listing-s3-keys-redux/
+
+
+
